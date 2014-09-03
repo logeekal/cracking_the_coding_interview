@@ -158,4 +158,35 @@ class LinkedList(object):
 			else:
 				cur_child =  cur_child.next
 				index += 1
-		return self
+				
+	def index_of(self, p_data):
+		"""
+		Finds the first occurence of the data provided.
+		
+		Time Complexity : O(N)
+		"""
+		current = self.first
+		index = 0
+		while current is not None:
+			if current.data == p_data:
+				return index
+			else:
+				current = current.next
+				index += 1
+		else:
+			print "Not Found"
+	def reverse(self):
+		"""
+		Reverses the LinkedList .. Uses extra buffer but with Time Complexity of O(N)
+		
+		If we do not use extra buffer, time complexity will be O(N**2)
+		"""
+		length =  self.size
+		res = LinkedList()
+		current = self.first
+		while current is not None:
+			res.insert(current.data,0)
+			current = current.next
+		return res
+			
+		
