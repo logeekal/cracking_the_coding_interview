@@ -8,7 +8,7 @@ class LLNode(Node):
 		self.next = None
 		
 class LinkedList(object):
-	def __init__(self, data):
+	def __init__(self, data=None):
 		self.first = LLNode(data)
 		self.last = self.first
 		self.size = 1
@@ -18,6 +18,10 @@ class LinkedList(object):
 		Add any element in the LinkedList
 		Function call -> instance.add(data)
 		"""
+		if self.first.data is None:
+			self.first.data = data 
+			print "Node added Succesfully"
+			return True
 		new_node = LLNode(data)
 		current = self.first
 		while current.next is not None:
@@ -35,7 +39,7 @@ class LinkedList(object):
 		"""
 		current = self.first
 		while current.next is not None:
-			print current.data
+			print str(current.data) + ' --> ' ,
 			current = current.next
 		else:
 			print current.data
@@ -71,7 +75,10 @@ class LinkedList(object):
 		if type(index) != int or index < -1:
 			raise TypeError('Index should be an integer and greater than or equal to -1')
 		new_node =  LLNode(data)
-
+		
+		if self.first.data is None: #This will be the case when there is no element in the LinkedList
+			if self.__add__(data):
+				return True
 		if index == 0:
 			new_node.next = self.first
 			self.first = new_node
@@ -89,6 +96,7 @@ class LinkedList(object):
 				print "Node inserted at position %d " % count
 			current = current.next
 			count += 1
+	
 	def dedup(self):
 		"""
 		Deduplicates an unsorted LinkedList
@@ -98,11 +106,56 @@ class LinkedList(object):
 			cur_child = current
 			dedup_cnt = 0
 			while cur_child.next is not None:
+				print cur_child.data
 				while cur_child.next.data == current.data:
 					cur_child.next = cur_child.next.next
 					dedup_cnt += 1
 					self.size -= 1
+					if cur_child.next is None:
+						break
 				else:
 					cur_child = cur_child.next 
 			print "%d duplicates removed for %d" % (dedup_cnt, current.data)
 			current = current.next
+	
+	def move(self, from_index, to_index):
+		"""
+		Instance.move(from_index,to_index)        .
+		Move an element from one location to the other
+		It picks the element at from_index and puts it at 
+		the location just before to_index.
+		
+		Time Complexity : O(N)
+		"""
+		current_main = self.first
+		index = 0
+		if from_index >= self.size or to_index >= self.size:
+			raise IndexError("Both index should not be greater than 10")
+		if from_index == 0:
+			source_node == self.first
+			self.first =  self.first.next
+		else:
+			cur_child =  current_main
+			while cur_child.next is not None:
+				if index == from_index - 1:
+					source_node = cur_child.next
+					cur_child.next = cur_child.next.next
+					self.size = self.size - 1
+					break
+				else:
+					cur_child = cur_child.next
+					index += 1
+			
+		#Now Source node has been assigned. Now it need to be moved to to_index
+		index  = 0
+		cur_child =  current_main
+		while cur_child is not None: #cur_child is used instead of cur_child.next so as to traverse to last element as well
+			if index == to_index - 1:
+				source_node.next = cur_child.next
+				cur_child.next = source_node
+				self.size += 1
+				break
+			else:
+				cur_child =  cur_child.next
+				index += 1
+		return self
